@@ -9,10 +9,15 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     permissions:
-      contents: read
       pages: write
       id-token: write
+
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -23,6 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
+          cache: pnpm
 
       - name: install pnpm
         uses: pnpm/action-setup@v2
@@ -45,6 +51,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: fix urls
+        run: |
+          sed -i 's|https://pnpm.io|https://mrfoxpro.github.io|1' ./docusaurus.config.js
+          sed -i 's|"baseUrl": "/"|"baseUrl": "/pnpm-docs"|1' ./docusaurus.config.js
+          sed -i '87,94d' ./docusaurus.config.js
+        
       - name: pnpm install
         run: pnpm i --frozen-lockfile
 
@@ -53,9 +65,17 @@ jobs:
         env:
           LOCALE_CI: en
 
-      - name: Deploy to GitHub Pages
+      - name: setup pages
+        uses: actions/configure-pages@v1
+        with:
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ./build
+
+      - name: deploy to pages
         id: deployment
         uses: actions/deploy-pages@v1
         with:
-          artifact_name: build
           token: ${{ github.token }}
