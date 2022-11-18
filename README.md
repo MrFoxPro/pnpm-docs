@@ -1,1 +1,1 @@
-This is English version of pnpm docs.
+This is English version of pnpm docs that is available on Github Pages.

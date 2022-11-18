@@ -53,14 +53,14 @@ jobs:
       - name: fix urls
         run: |
           sed -i 's|https://pnpm.io|https://mrfoxpro.github.io|1' ./docusaurus.config.js
-          sed -i 's|"baseUrl": "/"|"baseUrl": "/pnpm-docs"|1' ./docusaurus.config.js
-          sed -i '87,94d' ./docusaurus.config.js
+          sed -i 's|"baseUrl": "/"|"baseUrl": "/pnpm-docs/"|1' ./docusaurus.config.js
+          sed -i '87,94d;105,108d' ./docusaurus.config.js
         
       - name: pnpm install
         run: pnpm i --frozen-lockfile
 
       - name: build website
-        run: pnpm build
+        run: pnpm build && ls -a
         env:
           LOCALE_CI: en
 
