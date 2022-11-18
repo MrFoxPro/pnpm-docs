@@ -65,10 +65,6 @@ jobs:
         env:
           LOCALE_CI: en
 
-      - name: setup pages
-        uses: actions/configure-pages@v1
-        with:
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
